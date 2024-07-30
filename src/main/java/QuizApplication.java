@@ -1,26 +1,18 @@
 package src.main.java;
-
-import src.main.java.models.Student;
-import src.main.java.models.TestTaker;
-import src.main.java.models.Quiz;
-import src.main.java.models.Question;
+import src.main.java.models.*;
 import src.main.java.utils.LoginUtil;
 import src.main.java.utils.MenuUtil;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.util.*;
 
 public class QuizApplication {
 
     private static Map<String, Student> students = new HashMap<>();
     private static Map<String, TestTaker> testTakers = new HashMap<>();
     private static List<Quiz> quizzes = new ArrayList<>();
+    private static Map<String, List<QuizAttempt>> quizAttempts = new HashMap<>();
 
     public static void main(String[] args) {
-        // Adding some dummy users for testing
         students.put("S1", new Student("S1", "Alice"));
         students.put("S2", new Student("S2", "Bob"));
         testTakers.put("T1", new TestTaker("T1", "Charlie"));
@@ -35,22 +27,61 @@ public class QuizApplication {
 
             switch (choice) {
                 case 1:
-                    LoginUtil.studentLogin(scanner, students);
+                    handleStudentLogin(scanner);
                     break;
                 case 2:
-                    LoginUtil.testTakerLogin(scanner, testTakers);
+                    handleTestTakerLogin(scanner);
                     break;
                 case 3:
-                    createQuiz(scanner);
-                    break;
-                case 4:
-                    displayQuizzes();
-                    break;
-                case 5:
                     running = false;
                     break;
                 default:
                     System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
+
+    private static void handleStudentLogin(Scanner scanner) {
+        Student student = LoginUtil.studentLogin(scanner, students);
+        if (student != null) {
+            boolean studentLoggedIn = true;
+            while (studentLoggedIn) {
+                MenuUtil.displayStudentMenu();
+                int choice = scanner.nextInt();
+                switch (choice) {
+                    case 1:
+                        solveQuiz(scanner, student);
+                        break;
+                    case 2:
+                        studentLoggedIn = false;
+                        break;
+                    default:
+                        System.out.println("Invalid choice. Please try again.");
+                }
+            }
+        }
+    }
+
+    private static void handleTestTakerLogin(Scanner scanner) {
+        TestTaker testTaker = LoginUtil.testTakerLogin(scanner, testTakers);
+        if (testTaker != null) {
+            boolean testTakerLoggedIn = true;
+            while (testTakerLoggedIn) {
+                MenuUtil.displayTestTakerMenu();
+                int choice = scanner.nextInt();
+                switch (choice) {
+                    case 1:
+                        createQuiz(scanner);
+                        break;
+                    case 2:
+                        viewQuizAttempts();
+                        break;
+                    case 3:
+                        testTakerLoggedIn = false;
+                        break;
+                    default:
+                        System.out.println("Invalid choice. Please try again.");
+                }
             }
         }
     }
@@ -87,18 +118,51 @@ public class QuizApplication {
         quizzes.add(quiz);
     }
 
-    private static void displayQuizzes() {
-        for (Quiz quiz : quizzes) {
-            System.out.println("Quiz ID: " + quiz.getQuizID());
-            System.out.println("Title: " + quiz.getTitle());
-            for (Question question : quiz.getQuestions()) {
-                System.out.println("Question: " + question.getQuestionText());
-                List<String> options = question.getOptions();
-                for (int i = 0; i < options.size(); i++) {
-                    System.out.println((i + 1) + ": " + options.get(i));
-                }
+    private static void solveQuiz(Scanner scanner, Student student) {
+        System.out.print("Enter Quiz ID to solve: ");
+        String quizID = scanner.next();
+
+        Quiz quiz = quizzes.stream().filter(q -> q.getQuizID().equals(quizID)).findFirst().orElse(null);
+        if (quiz == null) {
+            System.out.println("Quiz not found.");
+            return;
+        }
+
+        if (quizAttempts.containsKey(student.getStudentID()) &&
+                quizAttempts.get(student.getStudentID()).stream()
+                        .anyMatch(attempt -> attempt.getQuizID().equals(quizID))) {
+            System.out.println("You have already attempted this quiz.");
+            return;
+        }
+
+        int score = 0;
+        for (Question question : quiz.getQuestions()) {
+            System.out.println("Question: " + question.getQuestionText());
+            List<String> options = question.getOptions();
+            for (int i = 0; i < options.size(); i++) {
+                System.out.println((i + 1) + ": " + options.get(i));
             }
-            System.out.println();
+            System.out.print("Enter your answer (1-4): ");
+            int answer = scanner.nextInt() - 1;
+            if (answer == question.getCorrectAnswerIndex()) {
+                score++;
+            }
+        }
+        System.out.println("You scored: " + score + "/" + quiz.getQuestions().size());
+
+        QuizAttempt attempt = new QuizAttempt(student.getStudentID(), quizID, score);
+        quizAttempts.putIfAbsent(student.getStudentID(), new ArrayList<>());
+        quizAttempts.get(student.getStudentID()).add(attempt);
+    }
+
+    private static void viewQuizAttempts() {
+        for (Map.Entry<String, List<QuizAttempt>> entry : quizAttempts.entrySet()) {
+            String studentID = entry.getKey();
+            List<QuizAttempt> attempts = entry.getValue();
+            System.out.println("Student ID: " + studentID);
+            for (QuizAttempt attempt : attempts) {
+                System.out.println("Quiz ID: " + attempt.getQuizID() + ", Score: " + attempt.getScore());
+            }
         }
     }
 }
