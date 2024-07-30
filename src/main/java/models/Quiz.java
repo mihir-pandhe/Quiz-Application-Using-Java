@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Quiz implements Serializable {
+    private static final long serialVersionUID = 1L;
     private String quizID;
     private String title;
     private List<Question> questions;
@@ -13,10 +14,6 @@ public class Quiz implements Serializable {
         this.quizID = quizID;
         this.title = title;
         this.questions = new ArrayList<>();
-    }
-
-    public void addQuestion(Question question) {
-        questions.add(question);
     }
 
     public String getQuizID() {
@@ -29,5 +26,9 @@ public class Quiz implements Serializable {
 
     public List<Question> getQuestions() {
         return questions;
+    }
+
+    public void addQuestion(Question question) {
+        questions.add(question);
     }
 }

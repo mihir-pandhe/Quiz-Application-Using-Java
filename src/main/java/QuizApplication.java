@@ -1,16 +1,9 @@
-<<<<<<< HEAD
 import models.*;
 import utils.FileUtil;
 import utils.MenuUtil;
 import utils.LoginUtil;
-import java.io.IOException;
-=======
-package src.main.java;
-import src.main.java.models.*;
-import src.main.java.utils.LoginUtil;
-import src.main.java.utils.MenuUtil;
 
->>>>>>> 730aef23d043601fee3f058f4d17cc7f595376eb
+import java.io.IOException;
 import java.util.*;
 
 public class QuizApplication {
@@ -21,29 +14,23 @@ public class QuizApplication {
     private static Map<String, List<QuizAttempt>> quizAttempts = new HashMap<>();
 
     public static void main(String[] args) {
-<<<<<<< HEAD
         try {
-            // Load data from files
             students = FileUtil.loadStudents();
             testTakers = FileUtil.loadTestTakers();
             quizzes = FileUtil.loadQuizzes();
             quizAttempts = FileUtil.loadQuizAttempts();
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("Error loading data: " + e.getMessage());
+            return;
         }
-=======
-        students.put("S1", new Student("S1", "Alice"));
-        students.put("S2", new Student("S2", "Bob"));
-        testTakers.put("T1", new TestTaker("T1", "Charlie"));
-        testTakers.put("T2", new TestTaker("T2", "David"));
->>>>>>> 730aef23d043601fee3f058f4d17cc7f595376eb
+        initializeSampleData();
 
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
 
         while (running) {
             MenuUtil.displayMainMenu();
-            int choice = scanner.nextInt();
+            int choice = getValidInteger(scanner);
 
             switch (choice) {
                 case 1:
@@ -61,7 +48,6 @@ public class QuizApplication {
         }
 
         try {
-            // Save data to files
             FileUtil.saveStudents(students);
             FileUtil.saveTestTakers(testTakers);
             FileUtil.saveQuizzes(quizzes);
@@ -71,13 +57,21 @@ public class QuizApplication {
         }
     }
 
+    private static int getValidInteger(Scanner scanner) {
+        while (!scanner.hasNextInt()) {
+            System.out.println("Invalid input. Please enter a valid integer.");
+            scanner.next();
+        }
+        return scanner.nextInt();
+    }
+
     private static void handleStudentLogin(Scanner scanner) {
         Student student = LoginUtil.studentLogin(scanner, students);
         if (student != null) {
             boolean studentLoggedIn = true;
             while (studentLoggedIn) {
                 MenuUtil.displayStudentMenu();
-                int choice = scanner.nextInt();
+                int choice = getValidInteger(scanner);
                 switch (choice) {
                     case 1:
                         solveQuiz(scanner, student);
@@ -98,52 +92,7 @@ public class QuizApplication {
             boolean testTakerLoggedIn = true;
             while (testTakerLoggedIn) {
                 MenuUtil.displayTestTakerMenu();
-                int choice = scanner.nextInt();
-                switch (choice) {
-                    case 1:
-                        createQuiz(scanner);
-                        break;
-                    case 2:
-                        viewQuizAttempts();
-                        break;
-                    case 3:
-                        testTakerLoggedIn = false;
-                        break;
-                    default:
-                        System.out.println("Invalid choice. Please try again.");
-                }
-            }
-        }
-    }
-
-    private static void handleStudentLogin(Scanner scanner) {
-        Student student = LoginUtil.studentLogin(scanner, students);
-        if (student != null) {
-            boolean studentLoggedIn = true;
-            while (studentLoggedIn) {
-                MenuUtil.displayStudentMenu();
-                int choice = scanner.nextInt();
-                switch (choice) {
-                    case 1:
-                        solveQuiz(scanner, student);
-                        break;
-                    case 2:
-                        studentLoggedIn = false;
-                        break;
-                    default:
-                        System.out.println("Invalid choice. Please try again.");
-                }
-            }
-        }
-    }
-
-    private static void handleTestTakerLogin(Scanner scanner) {
-        TestTaker testTaker = LoginUtil.testTakerLogin(scanner, testTakers);
-        if (testTaker != null) {
-            boolean testTakerLoggedIn = true;
-            while (testTakerLoggedIn) {
-                MenuUtil.displayTestTakerMenu();
-                int choice = scanner.nextInt();
+                int choice = getValidInteger(scanner);
                 switch (choice) {
                     case 1:
                         createQuiz(scanner);
@@ -181,7 +130,7 @@ public class QuizApplication {
             }
 
             System.out.print("Enter correct option number (1-4): ");
-            int correctAnswerIndex = scanner.nextInt() - 1;
+            int correctAnswerIndex = getValidInteger(scanner) - 1;
 
             Question question = new Question(questionText, options, correctAnswerIndex);
             quiz.addQuestion(question);
@@ -218,7 +167,7 @@ public class QuizApplication {
                 System.out.println((i + 1) + ": " + options.get(i));
             }
             System.out.print("Enter your answer (1-4): ");
-            int answer = scanner.nextInt() - 1;
+            int answer = getValidInteger(scanner) - 1;
             if (answer == question.getCorrectAnswerIndex()) {
                 score++;
             }
@@ -240,4 +189,16 @@ public class QuizApplication {
             }
         }
     }
+    private static void initializeSampleData() {
+        if (students.isEmpty()) {
+            students.put("S001", new Student("S001", "Alice"));
+            students.put("S002", new Student("S002", "Bob"));
+        }
+    
+        if (testTakers.isEmpty()) {
+            testTakers.put("T001", new TestTaker("T001", "Charlie"));
+            testTakers.put("T002", new TestTaker("T002", "David"));
+        }
+    }
 }
+
