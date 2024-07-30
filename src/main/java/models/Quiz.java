@@ -1,9 +1,10 @@
-package src.main.java.models;
+package models;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Quiz {
+public class Quiz implements Serializable {
     private String quizID;
     private String title;
     private List<Question> questions;
@@ -14,16 +15,16 @@ public class Quiz {
         this.questions = new ArrayList<>();
     }
 
+    public void addQuestion(Question question) {
+        questions.add(question);
+    }
+
     public String getQuizID() {
         return quizID;
     }
 
     public String getTitle() {
         return title;
-    }
-
-    public void addQuestion(Question question) {
-        questions.add(question);
     }
 
     public List<Question> getQuestions() {

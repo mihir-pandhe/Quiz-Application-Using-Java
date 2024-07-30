@@ -1,14 +1,24 @@
-package src.main.java.utils;
+package utils;
 
 public class MenuUtil {
-
     public static void displayMainMenu() {
         System.out.println("Welcome to the Quiz Application");
-        System.out.println("1. Login as Student");
-        System.out.println("2. Login as TestTaker");
-        System.out.println("3. Create Quiz");
-        System.out.println("4. Display Quizzes");
-        System.out.println("5. Exit");
-        System.out.print("Please select an option: ");
+        System.out.println("1. Student Login");
+        System.out.println("2. Test Taker Login");
+        System.out.println("3. Exit");
+        System.out.print("Enter your choice: ");
+    }
+
+    public static void displayStudentMenu() {
+        System.out.println("1. Solve Quiz");
+        System.out.println("2. Logout");
+        System.out.print("Enter your choice: ");
+    }
+
+    public static void displayTestTakerMenu() {
+        System.out.println("1. Create Quiz");
+        System.out.println("2. View Quiz Attempts");
+        System.out.println("3. Logout");
+        System.out.print("Enter your choice: ");
     }
 }

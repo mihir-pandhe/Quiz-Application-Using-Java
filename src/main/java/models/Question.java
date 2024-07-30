@@ -1,8 +1,9 @@
-package src.main.java.models;
+package models;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class Question {
+public class Question implements Serializable {
     private String questionText;
     private List<String> options;
     private int correctAnswerIndex;

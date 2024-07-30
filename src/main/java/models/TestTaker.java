@@ -1,6 +1,8 @@
-package src.main.java.models;
+package models;
 
-public class TestTaker {
+import java.io.Serializable;
+
+public class TestTaker implements Serializable {
     private String testTakerID;
     private String name;
 

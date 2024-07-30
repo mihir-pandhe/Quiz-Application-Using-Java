@@ -1,6 +1,8 @@
-package src.main.java.models;
+package models;
 
-public class Student {
+import java.io.Serializable;
+
+public class Student implements Serializable {
     private String studentID;
     private String name;
 
