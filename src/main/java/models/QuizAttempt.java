@@ -1,8 +1,14 @@
+<<<<<<< HEAD
 package models;
 
 import java.io.Serializable;
 
 public class QuizAttempt implements Serializable {
+=======
+package src.main.java.models;
+
+public class QuizAttempt {
+>>>>>>> 730aef23d043601fee3f058f4d17cc7f595376eb
     private String studentID;
     private String quizID;
     private int score;
@@ -24,4 +30,8 @@ public class QuizAttempt implements Serializable {
     public int getScore() {
         return score;
     }
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> 730aef23d043601fee3f058f4d17cc7f595376eb

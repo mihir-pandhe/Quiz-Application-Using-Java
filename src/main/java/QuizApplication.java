@@ -1,8 +1,16 @@
+<<<<<<< HEAD
 import models.*;
 import utils.FileUtil;
 import utils.MenuUtil;
 import utils.LoginUtil;
 import java.io.IOException;
+=======
+package src.main.java;
+import src.main.java.models.*;
+import src.main.java.utils.LoginUtil;
+import src.main.java.utils.MenuUtil;
+
+>>>>>>> 730aef23d043601fee3f058f4d17cc7f595376eb
 import java.util.*;
 
 public class QuizApplication {
@@ -13,6 +21,7 @@ public class QuizApplication {
     private static Map<String, List<QuizAttempt>> quizAttempts = new HashMap<>();
 
     public static void main(String[] args) {
+<<<<<<< HEAD
         try {
             // Load data from files
             students = FileUtil.loadStudents();
@@ -22,6 +31,12 @@ public class QuizApplication {
         } catch (IOException | ClassNotFoundException e) {
             System.out.println("Error loading data: " + e.getMessage());
         }
+=======
+        students.put("S1", new Student("S1", "Alice"));
+        students.put("S2", new Student("S2", "Bob"));
+        testTakers.put("T1", new TestTaker("T1", "Charlie"));
+        testTakers.put("T2", new TestTaker("T2", "David"));
+>>>>>>> 730aef23d043601fee3f058f4d17cc7f595376eb
 
         Scanner scanner = new Scanner(System.in);
         boolean running = true;
@@ -53,6 +68,51 @@ public class QuizApplication {
             FileUtil.saveQuizAttempts(quizAttempts);
         } catch (IOException e) {
             System.out.println("Error saving data: " + e.getMessage());
+        }
+    }
+
+    private static void handleStudentLogin(Scanner scanner) {
+        Student student = LoginUtil.studentLogin(scanner, students);
+        if (student != null) {
+            boolean studentLoggedIn = true;
+            while (studentLoggedIn) {
+                MenuUtil.displayStudentMenu();
+                int choice = scanner.nextInt();
+                switch (choice) {
+                    case 1:
+                        solveQuiz(scanner, student);
+                        break;
+                    case 2:
+                        studentLoggedIn = false;
+                        break;
+                    default:
+                        System.out.println("Invalid choice. Please try again.");
+                }
+            }
+        }
+    }
+
+    private static void handleTestTakerLogin(Scanner scanner) {
+        TestTaker testTaker = LoginUtil.testTakerLogin(scanner, testTakers);
+        if (testTaker != null) {
+            boolean testTakerLoggedIn = true;
+            while (testTakerLoggedIn) {
+                MenuUtil.displayTestTakerMenu();
+                int choice = scanner.nextInt();
+                switch (choice) {
+                    case 1:
+                        createQuiz(scanner);
+                        break;
+                    case 2:
+                        viewQuizAttempts();
+                        break;
+                    case 3:
+                        testTakerLoggedIn = false;
+                        break;
+                    default:
+                        System.out.println("Invalid choice. Please try again.");
+                }
+            }
         }
     }
 
